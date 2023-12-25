@@ -54,4 +54,6 @@ return {
     'windwp/nvim-autopairs',
     event = "InsertEnter",
     opts = {},
+	-- GIT HIGHLIGHTING --
+	'airblade/vim-gitgutter',
 }
