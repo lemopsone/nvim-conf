@@ -1,27 +1,59 @@
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
 require("lemopsone.remap")
 require("lemopsone.setup")
 require("lemopsone.myfuncs")
+require("lemopsone.lazy_init")
 
-vim.g.mapleader = " "
-
--- disable netrw at the very start of your init.lua
-vim.g.loaded_netrw = 1
-vim.g.loaded_netrwPlugin = 1
-vim.opt.termguicolors = true
-
-local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-if not vim.loop.fs_stat(lazypath) then
-  vim.fn.system({
-    "git",
-    "clone",
-    "--filter=blob:none",
-    "https://github.com/folke/lazy.nvim.git",
-    "--branch=stable", -- latest stable release
-    lazypath,
-  })
+function R(name)
+	require("plenary.reload").reload_module(name)
 end
-vim.opt.rtp:prepend(lazypath)
 
-require("lazy").setup("lemopsone.plugins")
+local augroup = vim.api.nvim_create_augroup
+local MyGroup = augroup("lemopsone", {})
+local autocmd = vim.api.nvim_create_autocmd
 
-require("nvim-tree").setup()
+autocmd('BufWritePre', {
+	group = MyGroup,
+	pattern = '',
+	command = ":%s/\\s\\+$//e"
+})
+
+autocmd('BufEnter', {
+	group = MyGroup,
+	pattern = '',
+	command = 'set fo-=c fo-=r fo-=o'
+})
+
+autocmd({ 'BufNewFile', 'BufRead' }, {
+	group = MyGroup,
+	pattern = "*.inc",
+	command = "set ft=cpp"
+})
+
+autocmd('LspAttach', {
+    group = MyGroup,
+    callback = function(e)
+        local opts = { buffer = e.buf }
+        vim.keymap.set("n", "gd", function() vim.lsp.buf.definition() end, opts)
+        vim.keymap.set("n", "K", function() vim.lsp.buf.hover() end, opts)
+        vim.keymap.set("n", "<leader>vws", function() vim.lsp.buf.workspace_symbol() end, opts)
+        vim.keymap.set("n", "<leader>vd", function() vim.diagnostic.open_float() end, opts)
+        vim.keymap.set("n", "<leader>vca", function() vim.lsp.buf.code_action() end, opts)
+        vim.keymap.set("n", "<leader>vrr", function() vim.lsp.buf.references() end, opts)
+        vim.keymap.set("n", "<leader>vrn", function() vim.lsp.buf.rename() end, opts)
+        vim.keymap.set("i", "<C-h>", function() vim.lsp.buf.signature_help() end, opts)
+        vim.keymap.set("n", "[d", function() vim.diagnostic.goto_next() end, opts)
+        vim.keymap.set("n", "]d", function() vim.diagnostic.goto_prev() end, opts)
+    end
+})
+
+vim.filetype.add({
+	extension ={
+		qrc = "xml",
+		ts = "xml",
+		inc = "cpp",
+		mov = "cpp",
+	}
+})
