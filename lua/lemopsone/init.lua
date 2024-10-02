@@ -5,6 +5,7 @@ require("lemopsone.remap")
 require("lemopsone.setup")
 require("lemopsone.myfuncs")
 require("lemopsone.lazy_init")
+require("lemopsone.langmap")
 
 function R(name)
 	require("plenary.reload").reload_module(name)
@@ -52,8 +53,9 @@ autocmd('LspAttach', {
 vim.filetype.add({
 	extension ={
 		qrc = "xml",
-		ts = "xml",
 		inc = "cpp",
 		mov = "cpp",
 	}
 })
+
+-- require('langmapper').automapping({ global = true, buffer = false })
