@@ -59,3 +59,4 @@ vim.filetype.add({
 })
 
 -- require('langmapper').automapping({ global = true, buffer = false })
+require("nvim-autopairs").get_rule("'")[1].not_filetypess = { "lisp" }
