@@ -34,9 +34,7 @@ return {
 				"rust_analyzer",
 				"gopls",
 				"phpactor",
-				"clangd",
-				"tailwindcss",
-				"pyright",
+				"clangd"
 			},
 			handlers = {
 				function(server_name) -- default handler (optional)
